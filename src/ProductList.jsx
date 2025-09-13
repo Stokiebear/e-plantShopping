@@ -3,10 +3,15 @@ import './ProductList.css'
 import CartItem from './CartItem';
 import { useDispatch } from 'react-redux';
 import { addItem } from './CartSlice';
+import { useState } from "react";
+import {useDispatch} from "react-redux";
+import {addItem} from "./CartSlice";
+
 function ProductList({ onHomeClick }) {
     const [showCart, setShowCart] = useState(false);
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
     const [addedToCart, setAddedToCart] = useState({});
+    const dispatch = useDispatch();
     const handleAddToCart = (product) => {
         dispatch(addItem(product)); // Dispatch the action to add the product to the cart (Redux action)
 
@@ -264,19 +269,58 @@ function ProductList({ onHomeClick }) {
         setShowCart(false);
     };
     return (
-        <><div>
-            {/*Loop through plants Array */}
-            {plantsArray.map(plan, index)} ; (
-            <div key={index} className="product-card">
-                <h3> {plant.name}</h3>
-                <p>{plant.description}</p>
-                <p>{plant.cost}</p>
-                <button onClick={() = handleAddToCart(plant)}>
-                    Add to Cart
-                </button>
+        <>return (
+            <div>
+            {plantsArray.map((category, index) => ( // Loop through each category in plantsArray
+  <div key={index}> {/* Unique key for each category div */}
+    <h1>
+      <div>{category.category}</div> {/* Display the category name */}
+    </h1>
+    <div className="product-list"> {/* Container for the list of plant cards */}
+      {category.plants.map((plant, plantIndex) => ( // Loop through each plant in the current category
+        <div className="product-card" key={plantIndex}> {/* Unique key for each plant card */}
+          <img 
+            className="product-image" 
+            src={plant.image} // Display the plant image
+            alt={plant.name} // Alt text for accessibility
+          />
+          <div className="product-title">{plant.name}</div> {/* Display plant name */}
+          {/* Display other plant details like description and cost */}
+          <div className="product-description">{plant.description}</div> {/* Display plant description */}
+          <div className="product-cost">${plant.cost}</div> {/* Display plant cost */}
+          <button
+            className="product-button"
+            onClick={() => handleAddToCart(plant)} // Handle adding plant to cart
+          >
+            Add to Cart
+          </button>
+        </div>
+      ))}
+    </div>
+  </div>
+))}  
+              {/* Loop through categories */}
+              {plantsArray.map((category, i) => (
+                <div key={i}>
+                  <h2>{category.category}</h2>
+                  <div className="product-grid">
+                    {category.plants.map((plant, j) => (
+                      <div key={j} className="product-card">
+                        <h3>{plant.name}</h3>
+                        <img src={plant.image} alt={plant.name} style={{ width: "150px" }} />
+                        <p>{plant.description}</p>
+                        <p>{plant.cost}</p>
+                        <button onClick={() => handleAddToCart(plant)}disabled={addedToCart[plant.name]}>
+                        {addedToCart[plant.name] ? "Added" : "Add to Cart"}
+                        </button>
+
+                      </div>
+                    ))}
+                  </div>
                 </div>
-            )
+              ))}
             </div>
+          );
             <div>
                 <div className="navbar" style={styleObj}>
                     <div className="tag">
